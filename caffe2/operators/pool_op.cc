@@ -18,6 +18,8 @@
 #include "caffe2/operators/pool_op.h"
 #include "caffe2/utils/cpu_neon.h"
 
+#include "dump_layers.h"
+
 namespace caffe2 {
 
 using std::max;
@@ -545,6 +547,7 @@ bool PoolOp<T, Context, PoolType>::RunOnDeviceWithOrderNCHW() {
           dilation_w(),
           Xdata,
           Ydata)) {
+
     return true;
   }
 
@@ -640,6 +643,11 @@ bool PoolOp<T, Context, PoolType>::RunOnDeviceWithOrderNCHW() {
       CAFFE_THROW("Unsupported pooling size : ", kernel_.size());
       return false;
   }
+
+#if ENABLE_DUMP_LAYERS
+  std::cout << "Pooling operator called." << std::endl;
+#endif
+
   return true;
 }
 

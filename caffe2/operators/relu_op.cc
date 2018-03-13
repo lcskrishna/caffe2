@@ -18,6 +18,12 @@
 
 #include "caffe2/utils/math.h"
 
+#include <stdio.h>
+#include <vector>
+#include <fstream>
+
+#include "dump_layers.h"
+
 namespace caffe2 {
 
 template <>
@@ -39,7 +45,12 @@ bool ReluOp<float, CPUContext>::RunOnDevice() {
   for (int i = 0; i < X.size(); ++i) {
     Ydata[i] = std::max(Xdata[i], 0.f);
   }
-  */
+  */  
+
+#if ENABLE_DUMP_LAYERS
+  std::cout << "Relu Operator called" << std::endl;
+#endif
+
   return true;
 }
 

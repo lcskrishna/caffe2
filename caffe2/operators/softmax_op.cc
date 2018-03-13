@@ -16,6 +16,7 @@
 
 #include "caffe2/operators/softmax_op.h"
 #include "caffe2/operators/softmax_shared.h"
+#include "dump_layers.h"
 
 namespace caffe2 {
 
@@ -52,6 +53,11 @@ bool SoftmaxOp<float, CPUContext>::RunOnDevice() {
       sum_multiplier_.data<float>(),
       false,
       rowmax_.mutable_data<float>());
+
+#if ENABLE_DUMP_LAYERS
+  std::cout << "Softmax layer called." << std::endl;
+#endif
+
   return true;
 }
 

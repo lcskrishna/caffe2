@@ -26,6 +26,8 @@
 #include "caffe2/operators/conv_pool_op_base.h"
 #include "caffe2/utils/math.h"
 
+#include "dump_layers.h"
+
 namespace caffe2 {
 
 template <typename T, class Context>
@@ -177,6 +179,10 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
   } else {
     f(&col_buffer_);
   }
+#if ENABLE_DUMP_LAYERS
+  std::cout << "Convolution operator called." << std::endl;
+#endif
+  
   return true;
 }
 

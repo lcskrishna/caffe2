@@ -22,6 +22,8 @@
 #include "caffe2/utils/conversions.h"
 #include "caffe2/utils/math.h"
 
+#include "dump_layers.h"
+
 namespace caffe2 {
 
 // This is Caffe's InnerProductOp, with a name that fits its purpose better.
@@ -142,6 +144,11 @@ class FullyConnectedOp final : public Operator<Context> {
         Y->template mutable_data<T_Y>(),
         &context_,
         math_type);
+
+#if ENABLE_DUMP_LAYERS
+    std::cout << "Fully Connected Operator called." << std::endl;
+#endif
+    
     return true;
   }
 

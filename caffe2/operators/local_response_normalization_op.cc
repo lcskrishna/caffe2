@@ -15,6 +15,7 @@
  */
 
 #include "caffe2/operators/local_response_normalization_op.h"
+#include "dump_layers.h"
 
 namespace caffe2 {
 
@@ -79,6 +80,11 @@ bool LRNOp<float, CPUContext>::RunOnDeviceWithOrderNCHW() {
   math::Powx<float, CPUContext>(
       X.size(), scale_data, -beta_, Ydata, &context_);
   math::Mul<float, CPUContext>(X.size(), Ydata, Xdata, Ydata, &context_);
+
+#if ENABLE_DUMP_LAYERS
+  std::cout << "LRN Operator called." << std::endl;
+#endif
+
   return true;
 }
 
