@@ -56,6 +56,30 @@ bool SoftmaxOp<float, CPUContext>::RunOnDevice() {
 
 #if ENABLE_DUMP_LAYERS
   std::cout << "Softmax layer called." << std::endl;
+
+  int layer_number = get_layer_count();
+  std::string output_file_name = "dump/output_softmax_layer_" + std::to_string(layer_number);
+  FILE * fs = fopen(output_file_name.c_str(), "wb");
+
+  const vector<long int> input_dims = X.dims();
+  const vector<long int> output_dims = Y->dims();
+
+  int output_count = 1;
+  for(int i=0; i < output_dims.size(); i++) {
+      output_count = output_count * output_dims[i];
+  }
+
+  std::cout << "DEBUG: output count of softmax is :" << output_count << std::endl;
+  //Dump data.
+  for(int i=0; i < output_count ; i++) {
+       float val = Y->data<float>()[i];
+       fwrite(&val, sizeof(float), 1, fs);
+  }
+
+  std::cout << "------------- Dump finished for softmax-------------" << std::endl;
+  fclose(fs);
+
+  increment_layer_count();
 #endif
 
   return true;

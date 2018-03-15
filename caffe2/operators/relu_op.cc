@@ -48,7 +48,46 @@ bool ReluOp<float, CPUContext>::RunOnDevice() {
   */  
 
 #if ENABLE_DUMP_LAYERS
-  std::cout << "Relu Operator called" << std::endl;
+  std::cout << "INFO: Relu Operator called" << std::endl;
+
+  /*
+  //Get layer number.
+  int layer_num = get_layer_count();
+
+  //calculation of the input dims.
+  vector<long int> in_tensor_dims = X.dims();
+  long input_count = 1;
+  for(int i=0; i < in_tensor_dims.size(); i++) {
+       input_count *= in_tensor_dims[i];
+  }
+
+  //calculation of the output dims.
+  vector<long int> out_tensor_dims = Y->dims();
+  long output_count = 1;
+  for(int i=0; i < out_tensor_dims.size(); i++) {
+      output_count *= out_tensor_dims[i];
+  }
+
+  //Dump input to relu layer.
+  std::string input_file_name = "dump/input_relu_layer_" + std::to_string(layer_num);
+  FILE * fs  = fopen(input_file_name.c_str(), "wb");
+  for(int i=0; i < input_count; i++) {
+      float val = X.data<float>()[i];
+      fwrite(&val, sizeof(float), 1, fs);
+  }
+  fclose(fs);
+
+  //Dump output layer to convolution layer.
+  std::string output_file_name = "dump/output_relu_layer_" + std::to_string(layer_num);
+  FILE * fp = fopen(output_file_name.c_str(), "wb");
+  for(int i=0; i < output_count; i++) {
+      float val = Y->data<float>()[i];
+      fwrite(&val, sizeof(float), 1, fp);
+  }
+  fclose(fp);
+  */
+
+  increment_layer_count();
 #endif
 
   return true;

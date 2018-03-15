@@ -180,9 +180,90 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
     f(&col_buffer_);
   }
 #if ENABLE_DUMP_LAYERS
-  std::cout << "Convolution operator called." << std::endl;
-#endif
+  std::cout << "INFO: Convolution operator called." << std::endl;
+
+//Calculation of input dims.
+  long input_count = 1;
+  const vector<long int> in_tensor_dims  = X.dims();
+  const vector<long int> out_tensor_dims = Y->dims();
+  for(int i=0; i < in_tensor_dims.size(); i++) {
+    input_count = input_count * in_tensor_dims[i];
+  }
+
+  if(input_count == X.size()) {
+      std::cout << "input sizes match" << std::endl;
+  }
+
+//Calculation of output dims.
+  long output_count = 1;
+  for(int i=0; i < out_tensor_dims.size(); i++) {
+    std::cout << output_dims[i] << " ";
+    output_count = output_count * output_dims[i];
+  }
+  std::cout << std::endl;
+
+  if(output_count == Y->size()) {
+      std::cout << "output sizes match." << std::endl;
+  }
+
+//Get the layer number.
+  int layer_num = get_layer_count();
   
+  //Dump input to convolution layer.
+  std::string input_file_name = "dump/input_conv_layer_" + std::to_string(layer_num);
+  FILE * fs  = fopen(input_file_name.c_str(), "wb");
+  if(!fs) {
+    std::cout << "ERROR: unable to create a file" << input_file_name << std::endl;
+    exit(1);
+  }
+
+  fwrite(X.template data<float>(), sizeof(float), input_count, fs);
+  fclose(fs);
+
+  //Dump output layer to convolution layer.
+  std::string output_file_name = "dump/output_conv_layer_" + std::to_string(layer_num);
+  FILE * fp = fopen(output_file_name.c_str(), "wb");
+
+  if(!fp) {
+    std::cout << "ERROR: unable to create a file" << input_file_name << std::endl;
+    exit(1);
+  }
+
+  for(int i=0; i < Y->size(); i++) {
+      float val = Y->template data<float>()[i];
+      fwrite(&val, sizeof(float), 1, fp);
+  }
+
+  //fwrite(Y->template data<float>(), sizeof(float), output_count, fs);
+  fclose(fp);
+
+
+  //Weights dump.
+  std::string weights_file_name = "dump/input_conv_layer_w_" + std::to_string(layer_num);
+  FILE * fs_weights = fopen(weights_file_name.c_str(), "wb");
+  if (!fs_weights) {
+      std::cout << "ERROR: unable to create file." << weights_file_name << std::endl;
+      exit(1);
+  }
+  fwrite(filter.template data<float>(), sizeof(float), filter.size(), fs_weights);
+  fclose(fs_weights);
+
+  //Bias dump.
+  if (InputSize() == 3) {
+      std::string bias_file_name = "dump/input_conv_layer_b_" + std::to_string(layer_num);
+      FILE * fs_bias = fopen(bias_file_name.c_str(), "wb");
+      if (!fs_bias) {
+          std::cout << "ERROR: unable to create file." << weights_file_name << std::endl;
+          exit(1);
+      }
+      auto& bias_input_data = Input(BIAS);
+      fwrite(bias_input_data.template data<float>(), sizeof(float), bias_input_data.size(), fs_bias);
+      fclose(fs_bias);
+  }
+
+  increment_layer_count();
+#endif
+
   return true;
 }
 

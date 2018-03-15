@@ -83,6 +83,7 @@ bool LRNOp<float, CPUContext>::RunOnDeviceWithOrderNCHW() {
 
 #if ENABLE_DUMP_LAYERS
   std::cout << "LRN Operator called." << std::endl;
+  increment_layer_count();
 #endif
 
   return true;
