@@ -146,7 +146,7 @@ class FullyConnectedOp final : public Operator<Context> {
         math_type);
 
 #if ENABLE_DUMP_LAYERS
-    std::cout << "Fully Connected Operator called." << std::endl;
+    std::cout << "INFO: Fully Connected Operator called." << std::endl;
     increment_layer_count();
 #endif
     

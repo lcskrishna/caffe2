@@ -179,32 +179,9 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
   } else {
     f(&col_buffer_);
   }
+
 #if ENABLE_DUMP_LAYERS
   std::cout << "INFO: Convolution operator called." << std::endl;
-
-//Calculation of input dims.
-  long input_count = 1;
-  const vector<long int> in_tensor_dims  = X.dims();
-  const vector<long int> out_tensor_dims = Y->dims();
-  for(int i=0; i < in_tensor_dims.size(); i++) {
-    input_count = input_count * in_tensor_dims[i];
-  }
-
-  if(input_count == X.size()) {
-      std::cout << "input sizes match" << std::endl;
-  }
-
-//Calculation of output dims.
-  long output_count = 1;
-  for(int i=0; i < out_tensor_dims.size(); i++) {
-    std::cout << output_dims[i] << " ";
-    output_count = output_count * output_dims[i];
-  }
-  std::cout << std::endl;
-
-  if(output_count == Y->size()) {
-      std::cout << "output sizes match." << std::endl;
-  }
 
 //Get the layer number.
   int layer_num = get_layer_count();
@@ -217,7 +194,7 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
     exit(1);
   }
 
-  fwrite(X.template data<float>(), sizeof(float), input_count, fs);
+  fwrite(X.template data<float>(), sizeof(float), X.size() , fs);
   fclose(fs);
 
   //Dump output layer to convolution layer.
