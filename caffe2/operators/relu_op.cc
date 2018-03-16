@@ -71,11 +71,6 @@ bool ReluOp<float, CPUContext>::RunOnDevice() {
       exit(1);
   }
 
-//  for(int i=0; i < output_count; i++) {
-//      float val = Y->data<float>()[i];
-//      fwrite(&val, sizeof(float), 1, fp);
-//  }
-
   fwrite(Y->data<float>(), sizeof(float), Y->size(), fp);
   fclose(fp);
   increment_layer_count();

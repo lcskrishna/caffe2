@@ -147,6 +147,49 @@ class FullyConnectedOp final : public Operator<Context> {
 
 #if ENABLE_DUMP_LAYERS
     std::cout << "INFO: Fully Connected Operator called." << std::endl;
+
+    int layer_number = get_layer_count();
+
+    //dump input to fc layer.
+    std::string input_file_name = "dump/input_fc_layer_" + std::to_string(layer_number);
+    FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
+    if (!fs_inputs) {
+        std::cout << "ERROR: unable to create a file : " << input_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(X.template data<float>(), sizeof(float), X.size(), fs_inputs);
+    fclose(fs_inputs);
+
+    //dump weights layer.
+    std::string weights_file_name = "dump/input_fc_layer_w_" + std::to_string(layer_number);
+    FILE * fs_weights = fopen(weights_file_name.c_str(), "wb");
+    if (!fs_weights) {
+        std::cout << "ERROR: unable to create a file : " << weights_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(W.template data<float>(), sizeof(float), W.size(), fs_weights);
+    fclose(fs_weights);
+
+    //dump bias layer.
+    std::string bias_file_name = "dump/input_fc_layer_b_" + std::to_string(layer_number);
+    FILE * fs_bias = fopen(bias_file_name.c_str(), "wb");
+    if (!fs_bias) {
+        std::cout << "ERROR: unable to create a file : " << bias_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(b.template data<float>(), sizeof(float), b.size(), fs_bias);
+    fclose(fs_bias);
+
+    //dump output layer.
+    std::string output_file_name = "dump/output_fc_layer_" + std::to_string(layer_number);
+    FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
+    if(!fs_outputs) {
+        std::cout << "ERROR: unable to create a file : " << output_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(Y->template data<float>(), sizeof(float), Y->size(), fs_outputs);
+    fclose(fs_outputs);
+    
     increment_layer_count();
 #endif
     

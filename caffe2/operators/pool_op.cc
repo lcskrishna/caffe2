@@ -647,43 +647,29 @@ bool PoolOp<T, Context, PoolType>::RunOnDeviceWithOrderNCHW() {
 #if ENABLE_DUMP_LAYERS
   std::cout << "INFO: Pooling operator called." << std::endl;
 
-  /*
   //Get layer number.
   int layer_num = get_layer_count();
 
-  //calculation of the input dims.
-  vector<long int> in_tensor_dims = X.dims();
-  long input_count = 1;
-  for(int i=0; i < in_tensor_dims.size(); i++) {
-       input_count *= in_tensor_dims[i];
-  }
-
-  //calculation of the output dims.
-  vector<long int> out_tensor_dims = Y->dims();
-  long output_count = 1;
-  for(int i=0; i < out_tensor_dims.size(); i++) {
-      output_count *= out_tensor_dims[i];
-  }
-
-  //dump input of the pooling layer.
+  //dump input layers.
   std::string input_file_name = "dump/input_pool_layer_" + std::to_string(layer_num);
-  FILE * fs  = fopen(input_file_name.c_str(), "wb");
-  for(int i=0; i < input_count; i++) {
-      float val = X.data<float>()[i];
-      fwrite(&val, sizeof(float), 1, fs);
+  FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
+  if(!fs_inputs) {
+    std::cout << "ERROR: unable create file : " << input_file_name << std::endl;
+    exit(1);
   }
-  fclose(fs);
+  fwrite(X.template data<float>(), sizeof(float), X.size(), fs_inputs);
+  fclose(fs_inputs);
 
-  //dump output to pool layer.
+  //dump output layers.
   std::string output_file_name = "dump/output_pool_layer_" + std::to_string(layer_num);
-  FILE * fp = fopen(output_file_name.c_str(), "wb");
-  for(int i=0; i < output_count; i++) {
-      float val = Y->data<float>()[i];
-      fwrite(&val, sizeof(float), 1, fp);
+  FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
+  if(!fs_outputs) {
+    std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;
+    exit(1);
   }
-  fclose(fp);
-*/
-
+  fwrite(Y->template data<float>(), sizeof(float), Y->size(), fs_outputs);
+  fclose(fs_outputs);
+  
   increment_layer_count();
 #endif
 

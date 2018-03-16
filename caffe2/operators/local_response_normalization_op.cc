@@ -82,7 +82,29 @@ bool LRNOp<float, CPUContext>::RunOnDeviceWithOrderNCHW() {
   math::Mul<float, CPUContext>(X.size(), Ydata, Xdata, Ydata, &context_);
 
 #if ENABLE_DUMP_LAYERS
-  std::cout << "LRN Operator called." << std::endl;
+  std::cout << "INFO: LRN Operator called." << std::endl;
+
+  //dump input layers.
+  int layer_num = get_layer_count();
+  std::string input_file_name = "dump/input_lrn_layer_" + std::to_string(layer_num);
+  FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
+  if(!fs_inputs) {
+    std::cout << "ERROR: unable to create file : " << input_file_name << std::endl;
+    exit(1);
+  }
+  fwrite(X.data<float>(), sizeof(float), X.size(), fs_inputs);
+  fclose(fs_inputs);
+
+  //dump output layers.
+  std::string output_file_name = "dump/output_lrn_layer_" + std::to_string(layer_num);
+  FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
+  if(!fs_outputs) {
+    std::cout << "ERROR: unable to open the file : " << output_file_name << std::endl;
+    exit(1);
+  }
+  fwrite(Y->data<float>(), sizeof(float), Y->size(), fs_outputs);
+  fclose(fs_outputs);
+
   increment_layer_count();
 #endif
 

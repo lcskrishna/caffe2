@@ -55,29 +55,30 @@ bool SoftmaxOp<float, CPUContext>::RunOnDevice() {
       rowmax_.mutable_data<float>());
 
 #if ENABLE_DUMP_LAYERS
-  std::cout << "Softmax layer called." << std::endl;
+  std::cout << "INFO: Softmax layer called." << std::endl;
 
   int layer_number = get_layer_count();
+
+  //dump input of softmax layer.
+  std::string input_file_name = "dump/input_softmax_layer_" + std::to_string(layer_number);
+  FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
+  if (!fs_inputs) {
+    std::cout << "ERROR: unable to create file : " << input_file_name << std::endl;
+    exit(1);
+  }
+  fwrite(X.data<float>(), sizeof(float), X.size(), fs_inputs);
+  fclose(fs_inputs);
+
+  //dump output of softmax layer.
   std::string output_file_name = "dump/output_softmax_layer_" + std::to_string(layer_number);
-  FILE * fs = fopen(output_file_name.c_str(), "wb");
-
-  const vector<long int> input_dims = X.dims();
-  const vector<long int> output_dims = Y->dims();
-
-  int output_count = 1;
-  for(int i=0; i < output_dims.size(); i++) {
-      output_count = output_count * output_dims[i];
+  FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
+  if(!fs_outputs) {
+    std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;
+    exit(1);
   }
-
-  std::cout << "DEBUG: output count of softmax is :" << output_count << std::endl;
-  //Dump data.
-  for(int i=0; i < output_count ; i++) {
-       float val = Y->data<float>()[i];
-       fwrite(&val, sizeof(float), 1, fs);
-  }
-
+  fwrite(Y->data<float>(), sizeof(float), Y->size(), fs_outputs);
   std::cout << "------------- Dump finished for softmax-------------" << std::endl;
-  fclose(fs);
+  fclose(fs_outputs);
 
   increment_layer_count();
 #endif
