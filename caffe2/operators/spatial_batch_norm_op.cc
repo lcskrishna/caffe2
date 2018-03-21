@@ -16,6 +16,8 @@
 
 #include "caffe2/operators/spatial_batch_norm_op.h"
 
+#include "dump_layers.h"
+
 namespace caffe2 {
 
 template <>
@@ -172,6 +174,11 @@ bool SpatialBNOp<CPUContext>::RunOnDevice() {
     default:
       CAFFE_THROW("Unknown storage order: ", order_);
   }
+
+#if ENABLE_DUMP_LAYERS
+    std::cout << "INFO: Batch normalization layer is called." << std::endl;
+#endif
+
   return true;
 }
 
