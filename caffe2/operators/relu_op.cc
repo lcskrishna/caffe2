@@ -52,9 +52,11 @@ bool ReluOp<float, CPUContext>::RunOnDevice() {
 
   //Get layer number.
   int layer_num = get_layer_count();
+  char str[10]; sprintf(str, "%04d", layer_num);
+  std::string counter_val = str;
 
   //Dump input to relu layer.
-  std::string input_file_name = "dump/input_relu_layer_" + std::to_string(layer_num);
+  std::string input_file_name = "dump/" + counter_val + "_caffe2_relu_layer_input";
   FILE * fs  = fopen(input_file_name.c_str(), "wb");
   if (!fs) {
       std::cout << "ERROR: unable to create a file " << input_file_name << std::endl;
@@ -64,7 +66,7 @@ bool ReluOp<float, CPUContext>::RunOnDevice() {
   fclose(fs);
 
   //Dump output layer to convolution layer.
-  std::string output_file_name = "dump/output_relu_layer_" + std::to_string(layer_num);
+  std::string output_file_name = "dump/" + counter_val + "_caffe2_relu_layer_output";
   FILE * fp = fopen(output_file_name.c_str(), "wb");
   if(!fp) {
       std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;

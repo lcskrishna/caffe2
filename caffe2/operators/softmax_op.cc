@@ -58,9 +58,11 @@ bool SoftmaxOp<float, CPUContext>::RunOnDevice() {
   std::cout << "INFO: Softmax layer called." << std::endl;
 
   int layer_number = get_layer_count();
+  char str[10]; sprintf(str, "%04d", layer_number);
+  std::string counter_val = str;
 
   //dump input of softmax layer.
-  std::string input_file_name = "dump/input_softmax_layer_" + std::to_string(layer_number);
+  std::string input_file_name = "dump/" + counter_val + "_caffe2_softmax_layer_input";
   FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
   if (!fs_inputs) {
     std::cout << "ERROR: unable to create file : " << input_file_name << std::endl;
@@ -70,7 +72,7 @@ bool SoftmaxOp<float, CPUContext>::RunOnDevice() {
   fclose(fs_inputs);
 
   //dump output of softmax layer.
-  std::string output_file_name = "dump/output_softmax_layer_" + std::to_string(layer_number);
+  std::string output_file_name = "dump/" + counter_val + "_caffe2_softmax_layer_output";
   FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
   if(!fs_outputs) {
     std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;

@@ -647,11 +647,18 @@ bool PoolOp<T, Context, PoolType>::RunOnDeviceWithOrderNCHW() {
 #if ENABLE_DUMP_LAYERS
   std::cout << "INFO: Pooling operator called." << std::endl;
 
+  std::cout << "INPUT POOL: channels, height, width: " << channels << " " << height << " " << width << std::endl;
+  std::cout << "OUTPUT POOL: depth, height, width: " << pooled_depth << " " << pooled_height << " " << pooled_width << std::endl;
+  std::cout << "KERNEL POOL: height, width:" << kernel_h() << " " << kernel_w() << std::endl;
+  std::cout << "Pad POOL: " << pad_b() << " " << pad_t() << " " << pad_l() << " " << pad_r() << std::endl;
+
   //Get layer number.
   int layer_num = get_layer_count();
+  char str[10]; sprintf(str, "%04d", layer_num);
+  std::string counter_val = str;
 
   //dump input layers.
-  std::string input_file_name = "dump/input_pool_layer_" + std::to_string(layer_num);
+  std::string input_file_name = "dump/" + counter_val + "_caffe2_pool_layer_input";
   FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
   if(!fs_inputs) {
     std::cout << "ERROR: unable create file : " << input_file_name << std::endl;
@@ -661,7 +668,7 @@ bool PoolOp<T, Context, PoolType>::RunOnDeviceWithOrderNCHW() {
   fclose(fs_inputs);
 
   //dump output layers.
-  std::string output_file_name = "dump/output_pool_layer_" + std::to_string(layer_num);
+  std::string output_file_name = "dump/" + counter_val + "_caffe2_pool_layer_output";
   FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
   if(!fs_outputs) {
     std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;

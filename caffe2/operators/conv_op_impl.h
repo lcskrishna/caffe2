@@ -185,9 +185,12 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
 
 //Get the layer number.
   int layer_num = get_layer_count();
+
+  char str[10]; sprintf(str, "%04d", layer_num);
+  std::string counter_val = str;
   
   //Dump input to convolution layer.
-  std::string input_file_name = "dump/input_conv_layer_" + std::to_string(layer_num);
+  std::string input_file_name = "dump/" + counter_val + "_caffe2_conv_layer_input";
   FILE * fs  = fopen(input_file_name.c_str(), "wb");
   if(!fs) {
     std::cout << "ERROR: unable to create a file" << input_file_name << std::endl;
@@ -198,7 +201,7 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
   fclose(fs);
 
   //Dump output layer to convolution layer.
-  std::string output_file_name = "dump/output_conv_layer_" + std::to_string(layer_num);
+  std::string output_file_name = "dump/" + counter_val + "_caffe2_conv_layer_output";
   FILE * fp = fopen(output_file_name.c_str(), "wb");
 
   if(!fp) {
@@ -216,7 +219,7 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
 
 
   //Weights dump.
-  std::string weights_file_name = "dump/input_conv_layer_w_" + std::to_string(layer_num);
+  std::string weights_file_name = "dump/" + counter_val + "_caffe2_conv_layer_input_w";
   FILE * fs_weights = fopen(weights_file_name.c_str(), "wb");
   if (!fs_weights) {
       std::cout << "ERROR: unable to create file." << weights_file_name << std::endl;
@@ -227,7 +230,7 @@ bool ConvOp<T, Context>::RunOnDeviceWithOrderNCHW() {
 
   //Bias dump.
   if (InputSize() == 3) {
-      std::string bias_file_name = "dump/input_conv_layer_b_" + std::to_string(layer_num);
+      std::string bias_file_name = "dump/" + counter_val + "_caffe2_conv_layer_input_b";
       FILE * fs_bias = fopen(bias_file_name.c_str(), "wb");
       if (!fs_bias) {
           std::cout << "ERROR: unable to create file." << weights_file_name << std::endl;

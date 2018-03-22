@@ -86,7 +86,10 @@ bool LRNOp<float, CPUContext>::RunOnDeviceWithOrderNCHW() {
 
   //dump input layers.
   int layer_num = get_layer_count();
-  std::string input_file_name = "dump/input_lrn_layer_" + std::to_string(layer_num);
+  char str[10]; sprintf(str, "%04d", layer_num);
+  std::string counter_val = str;
+
+  std::string input_file_name = "dump/" + counter_val + "_caffe2_lrn_layer_input";
   FILE * fs_inputs = fopen(input_file_name.c_str(), "wb");
   if(!fs_inputs) {
     std::cout << "ERROR: unable to create file : " << input_file_name << std::endl;
@@ -96,7 +99,7 @@ bool LRNOp<float, CPUContext>::RunOnDeviceWithOrderNCHW() {
   fclose(fs_inputs);
 
   //dump output layers.
-  std::string output_file_name = "dump/output_lrn_layer_" + std::to_string(layer_num);
+  std::string output_file_name = "dump/" + counter_val + "_caffe2_lrn_layer_output";
   FILE * fs_outputs = fopen(output_file_name.c_str(), "wb");
   if(!fs_outputs) {
     std::cout << "ERROR: unable to open the file : " << output_file_name << std::endl;

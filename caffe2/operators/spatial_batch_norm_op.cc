@@ -177,6 +177,34 @@ bool SpatialBNOp<CPUContext>::RunOnDevice() {
 
 #if ENABLE_DUMP_LAYERS
     std::cout << "INFO: Batch normalization layer is called." << std::endl;
+
+    int layer_num = get_layer_count();
+    char str[10]; sprintf(str, "%04d", layer_num);
+    std::string counter_val = str;
+
+    //Dump input.
+    std::string input_file_name = "dump/" + counter_val + "_caffe2_batch_norm_layer_input";
+    std::string output_file_name = "dump/" + counter_val + "_caffe2_batch_norm_layer_output";
+
+    FILE * fs  = fopen(input_file_name.c_str(), "wb");
+    if (!fs) {
+        std::cout << "ERROR: unable to create a file " << input_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(X.data<float>(), sizeof(float), X.size(), fs);
+    fclose(fs);
+
+    //Dump output layer to convolution layer.
+    FILE * fp = fopen(output_file_name.c_str(), "wb");
+    if(!fp) {
+        std::cout << "ERROR: unable to create file : " << output_file_name << std::endl;
+        exit(1);
+    }
+    fwrite(Y->data<float>(), sizeof(float), Y->size(), fp);
+    fclose(fp);
+
+    increment_layer_count();
+
 #endif
 
   return true;
