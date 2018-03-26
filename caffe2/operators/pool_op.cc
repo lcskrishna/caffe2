@@ -413,6 +413,11 @@ class AveragePool {
     (void)input;
     (void)output;
 #endif
+
+#if ENABLE_DUMP_LAYERS
+      std::cout << "Pooling mode: AvgPool" << std::endl;
+#endif
+
     return false;
   }
 };
@@ -504,6 +509,10 @@ class MaxPool {
     (void)dilationW;
     (void)input;
     (void)output;
+#endif
+
+#if ENABLE_DUMP_LAYERS
+      std::cout << "Pooling mode: MaxPool" << std::endl;
 #endif
     return false;
   }
